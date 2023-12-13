@@ -1,9 +1,11 @@
 import {
   Button,
   FlatList,
+  Modal,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -12,13 +14,21 @@ import React, { useState } from 'react';
 import GoalItem from './GoalItem.js';
 
 
-const SectionFlatList = () => {
+const SectionFlatList = ({isVisible, onClose}) => {
+
 
     const [goals, setGoals] = useState([]);
     const [inputText, setInputText] = useState('');
   
     const renderItem = ({item}) => (
-      <Text style={styles.goal}>{item.value}</Text>
+      
+      <TouchableOpacity onPress={() => deleteItem(item)} 
+      style={({pressed}) => pressed && styles.itemPressed}>
+
+        <GoalItem item={item}></GoalItem>
+
+      </TouchableOpacity>
+
     );
   
     const addNewItem = (goals, newGoal) => {
@@ -28,24 +38,32 @@ const SectionFlatList = () => {
         setInputText(''); // Clear the input field after adding an item
       }
     };
+
+    const deleteItem = (goal) => {
+      setGoals(goals =>{
+        return goals.filter( (item) => item.key !== goal.key)
+      });
+    };
   
     return (
-      <>
-      <View style={styles.section}>
+      <Modal visible={isVisible} onBackdropPress={onClose} animationType='slide'>
+        <Text>Goals</Text>
+        <View style={styles.section}>
+          <Button title="Add" onPress={() => addNewItem(goals, inputText)} />
+          <Button title="Cancel" onPress={onClose} /> 
+        </View>
         <TextInput
-          placeholder="Enter goal"
-          value={inputText}
-          onChangeText={(text) => setInputText(text)}
-        />
-        <Button title="Add" onPress={() => addNewItem(goals, inputText)} /> 
-      </View>
-      
-      <FlatList
-          data={goals}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.key}
-        />
-      </>
+            placeholder="Enter goal"
+            value={inputText}
+            onChangeText={(text) => setInputText(text)}
+          />
+        
+        <FlatList
+            data={goals}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.key}
+          />
+      </Modal>
     );
   };
 
@@ -67,6 +85,9 @@ const styles = StyleSheet.create({
     textAlign:'center',
     verticalAlign: 'middle',
     color: '#000000'
+  },
+  itemPressed:  {
+    color: '#a2c4fa'
   }
 
 });

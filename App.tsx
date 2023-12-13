@@ -8,14 +8,10 @@
 import React, { useState } from 'react';
 
 import {
-  Button,
-  FlatList,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
@@ -24,7 +20,7 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-import SectionFlatList from './components/SectionFlatList.js';
+import GoalListComponent from './components/GoalListComponent.js';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -32,6 +28,7 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -48,7 +45,7 @@ function App(): JSX.Element {
 
         <Text style={styles.title}>Agenda</Text>
         
-        <SectionFlatList/>
+        <GoalListComponent/>
         
       </View>
     </SafeAreaView>
@@ -56,14 +53,17 @@ function App(): JSX.Element {
   );}
 
 const styles = StyleSheet.create({
+
   sectionContainer: {
     marginTop: 15,
   },
+
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
     color: 'grey'
   },
+
   sectionDescription: {
     flexDirection: 'column',
     flex: 1,
@@ -72,19 +72,22 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     padding: 5,
   },
+
   highlight: {
     fontWeight: '700',
   },
+
   section: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-
   },
+
   textInput: {
     borderWidth: 1,
     padding: 5,
     width: '60%',
   },
+
   title: {
     fontSize: 28,
     fontWeight: '700',
@@ -92,6 +95,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
   },
+  
 });
 
 export default App;
