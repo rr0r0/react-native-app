@@ -9,18 +9,73 @@ import {
   View,
 } from 'react-native';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import GoalItem from './GoalItem.js';
 
+import RNFS from 'react-native-fs';
 
 const SectionFlatList = ({isVisible, onClose}) => {
 
-
     const [goals, setGoals] = useState([]);
     const [inputText, setInputText] = useState('');
+
+    useEffect(() => {
+      const readFromFile = async () => {
+        try {
+          const path = RNFS.DocumentDirectoryPath + '/savedGoals.json';
+          const exists = await RNFS.exists(path);
   
-    const renderItem = ({item}) => (
+          if (exists) {
+            const savedData = await RNFS.readFile(path, 'utf8');
+            const parsedData = JSON.parse(savedData);
+            setGoals(parsedData);
+          } else {
+            console.log('File does not exist.');
+          }
+        } catch (error) {
+          console.error('Error reading file:', error);
+        }
+      };
+  
+      readFromFile();
+    }, []);
+
+    const writeToFile = async (data) => {
+    try {
+      const path = RNFS.DocumentDirectoryPath + '/savedGoals.json';
+      await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
+      console.log('File written successfully!');
+    } catch (error) {
+      console.error('Error writing to file:', error);
+    }
+    };
+
+    const addNewItem = (newGoal) => {
+      if (newGoal && typeof newGoal === 'string' && newGoal.trim() !== '') {
+        const newItem = { key: String(goals.length + 1), value: newGoal.trim() };
+        const updatedGoals = [...goals, newItem];
+  
+        setGoals(updatedGoals);
+        writeToFile(updatedGoals);
+  
+        setInputText('');
+      }
+    };
+  
+    const deleteItem = (goal) => {
+      setGoals((currentGoals) => {
+        const updatedGoals = currentGoals.filter((item) => item.key !== goal.key);
+  
+        // Save the updated goals to a file
+        setGoals(updatedGoals);
+        writeToFile(updatedGoals);
+  
+        return updatedGoals;
+      });
+    };
+
+    const renderItem = async ({item}) => (
       
       <TouchableOpacity onPress={() => deleteItem(item)} 
       style={({pressed}) => pressed && styles.itemPressed}>
@@ -30,20 +85,6 @@ const SectionFlatList = ({isVisible, onClose}) => {
       </TouchableOpacity>
 
     );
-  
-    const addNewItem = (goals, newGoal) => {
-      if (newGoal.trim() !== '') {
-        const newItem= { key: String(goals.length + 1), value: newGoal};
-        setGoals([...goals, newItem]);
-        setInputText(''); // Clear the input field after adding an item
-      }
-    };
-
-    const deleteItem = (goal) => {
-      setGoals(goals =>{
-        return goals.filter( (item) => item.key !== goal.key)
-      });
-    };
   
     return (
       <Modal visible={isVisible} onBackdropPress={onClose} animationType='slide'>
