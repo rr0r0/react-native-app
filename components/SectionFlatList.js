@@ -44,6 +44,7 @@ const SectionFlatList = ({isVisible, onClose}) => {
     const writeToFile = async (data) => {
     try {
       const path = RNFS.DocumentDirectoryPath + '/savedGoals.json';
+      console.log(path)
       await RNFS.writeFile(path, JSON.stringify(data), 'utf8');
       console.log('File written successfully!');
     } catch (error) {
@@ -54,43 +55,44 @@ const SectionFlatList = ({isVisible, onClose}) => {
     const addNewItem = (newGoal) => {
       if (newGoal && typeof newGoal === 'string' && newGoal.trim() !== '') {
         const newItem = { key: String(goals.length + 1), value: newGoal.trim() };
-        const updatedGoals = [...goals, newItem];
-  
-        setGoals(updatedGoals);
-        writeToFile(updatedGoals);
-  
-        setInputText('');
+        
+        setGoals((currentGoals) => {
+          try {
+            const updatedGoals = Array.isArray(currentGoals) ? [...currentGoals, newItem] : [newItem];
+            writeToFile(updatedGoals);
+            setInputText('');
+            return updatedGoals;
+          } catch (error) {
+            console.error('Error in setGoals:', error);
+            return currentGoals; // Return the current state in case of an error
+          }
+        });
       }
     };
   
     const deleteItem = (goal) => {
       setGoals((currentGoals) => {
         const updatedGoals = currentGoals.filter((item) => item.key !== goal.key);
-  
-        // Save the updated goals to a file
-        setGoals(updatedGoals);
-        writeToFile(updatedGoals);
-  
-        return updatedGoals;
+        writeToFile(updatedGoals); // Move the writeToFile here
+        return [...updatedGoals]; // Spread the array before returning
       });
     };
 
-    const renderItem = async ({item}) => (
+    const renderItem = ({item}) => {
+      const { key, value } = item;
       
-      <TouchableOpacity onPress={() => deleteItem(item)} 
-      style={({pressed}) => pressed && styles.itemPressed}>
+      return  (<TouchableOpacity onPress={() => deleteItem(item)} >
 
         <GoalItem item={item}></GoalItem>
 
-      </TouchableOpacity>
-
-    );
+      </TouchableOpacity>);
+    }; 
   
     return (
       <Modal visible={isVisible} onBackdropPress={onClose} animationType='slide'>
         <Text>Goals</Text>
         <View style={styles.section}>
-          <Button title="Add" onPress={() => addNewItem(goals, inputText)} />
+          <Button title="Add" onPress={() => addNewItem(inputText)} />
           <Button title="Cancel" onPress={onClose} /> 
         </View>
         <TextInput

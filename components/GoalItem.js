@@ -4,10 +4,6 @@ import {
   } from 'react-native';
 
   const GoalItem = ({item}) => {
-
-    const deleteItem = () => {
-        console.log("DELETE "+ item.value)
-    };
   
     return (
         <>
