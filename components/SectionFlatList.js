@@ -12,6 +12,7 @@ import {
 import React, { useState, useEffect } from 'react';
 
 import GoalItem from './GoalItem.js';
+import AppButton from './AppButton.js'
 
 import RNFS from 'react-native-fs';
 
@@ -73,8 +74,8 @@ const SectionFlatList = ({isVisible, onClose}) => {
     const deleteItem = (goal) => {
       setGoals((currentGoals) => {
         const updatedGoals = currentGoals.filter((item) => item.key !== goal.key);
-        writeToFile(updatedGoals); // Move the writeToFile here
-        return [...updatedGoals]; // Spread the array before returning
+        writeToFile(updatedGoals);
+        return [...updatedGoals];
       });
     };
 
@@ -90,22 +91,27 @@ const SectionFlatList = ({isVisible, onClose}) => {
   
     return (
       <Modal visible={isVisible} onBackdropPress={onClose} animationType='slide'>
-        <Text>Goals</Text>
         <View style={styles.section}>
-          <Button title="Add" onPress={() => addNewItem(inputText)} />
-          <Button title="Cancel" onPress={onClose} /> 
+          <Text style={styles.title2}>Goals</Text>
+          <View style={styles.sectionB}>
+            <AppButton text={'Add'} functionOnPress={() => addNewItem(inputText)}>
+              </AppButton>
+            <AppButton text={'Cancel'} functionOnPress={onClose}>
+              </AppButton>
+          </View>
+          <TextInput
+              placeholder="Enter goal"
+              value={inputText}
+              onChangeText={(text) => setInputText(text)}
+              style={styles.textInput}
+            />
+          
+          <FlatList
+              data={goals}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.key}
+            />
         </View>
-        <TextInput
-            placeholder="Enter goal"
-            value={inputText}
-            onChangeText={(text) => setInputText(text)}
-          />
-        
-        <FlatList
-            data={goals}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.key}
-          />
       </Modal>
     );
   };
@@ -113,24 +119,33 @@ const SectionFlatList = ({isVisible, onClose}) => {
 export default SectionFlatList;
 
 const styles = StyleSheet.create({
-  
+
   section: {
+    flexDirection: 'collumn',
+    padding: 10,
+  },
+
+  sectionB: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    paddingBottom: 10,
 
   },
 
-  goal: {
-    padding: 10, 
-    borderBottomWidth: 1, 
-    borderBottomColor: '#ccc',
-    borderRadius: 6,
-    textAlign:'center',
-    verticalAlign: 'middle',
-    color: '#000000'
+  title2: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#000000',
+    marginTop: 8,
+    marginBottom: 8,
   },
-  itemPressed:  {
-    color: '#a2c4fa'
+
+  textInput: {
+    borderColor: '#bdbdbd',
+    borderWidth: 2,
+    borderRadius: 5,
+    padding: 5,
+    paddingBottom: 10,
   }
 
 });

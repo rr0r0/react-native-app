@@ -21,11 +21,12 @@ const styles = StyleSheet.create({
   goal: {
     padding: 10, 
     borderBottomWidth: 1, 
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#bdbdbd',
     borderRadius: 6,
     textAlign:'center',
     verticalAlign: 'middle',
-    color: '#000000'
+    color: '#000000',
+    padding: 10,
   }
 
 });

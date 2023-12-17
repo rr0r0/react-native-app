@@ -43,7 +43,7 @@ function App(): JSX.Element {
             paddingHorizontal: 24
           }}>
 
-        <Text style={styles.title}>Agenda</Text>
+        <Text style={styles.title1}>Agenda</Text>
         
         <GoalListComponent/>
         
@@ -53,42 +53,8 @@ function App(): JSX.Element {
   );}
 
 const styles = StyleSheet.create({
-
-  sectionContainer: {
-    marginTop: 15,
-  },
-
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: 'grey'
-  },
-
-  sectionDescription: {
-    flexDirection: 'column',
-    flex: 1,
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    padding: 5,
-  },
-
-  highlight: {
-    fontWeight: '700',
-  },
-
-  section: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  textInput: {
-    borderWidth: 1,
-    padding: 5,
-    width: '60%',
-  },
-
-  title: {
+  
+  title1: {
     fontSize: 28,
     fontWeight: '700',
     color: '#000000',
